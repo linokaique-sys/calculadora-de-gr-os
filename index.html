@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Sementes</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+        h2 { 
+            color: #7d2e2e; 
+            text-align: center; 
+            margin-top: 0; 
+        }
+        .form-group { 
+            margin-bottom: 1.5rem; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 0.5rem; 
+            font-weight: bold; 
+            color: #444; 
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .result-box {
+            background-color: #e8f5e9;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 5px solid #7d2e2e;
+            margin-top: 1rem;
+        }
+        .result-box p { 
+            margin: 5px 0; 
+            color: #5e1b1b; 
+            font-weight: bold; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Calculadora de Sementes</h2>
+    
+    <div class="form-group">
+        <label for="semente">Tipo de Semente:</label>
+        <select id="semente" onchange="recalcular()">
+            <option value="0.75">Soja (Média: 0.75 kg/L)</option>
+            <option value="0.72">Milho (Média: 0.72 kg/L)</option>
+            <option value="0.78">Trigo (Média: 0.78 kg/L)</option>
+            <option value="0.60">Arroz (Média: 0.60 kg/L)</option>
+            <option value="0.45">Aveia (Média: 0.45 kg/L)</option>
+            <option value="0.65">Feijão (Média: 0.65 kg/L)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="litros">Volume (Litros):</label>
+        <input type="number" id="litros" placeholder="Insira os litros" oninput="converterDeLitros()">
+    </div>
+
+    <div class="form-group">
+        <label for="peso">Peso (Quilos - kg):</label>
+        <input type="number" id="peso" placeholder="Insira o peso" oninput="converterDePeso()">
+    </div>
+
+    <div class="result-box">
+        <p id="res-litros">Volume: 0 L</p>
+        <p id="res-peso">Peso: 0 kg</p>
+    </div>
+</div>
+
+<script>
+    // Guarda qual foi o último campo modificado pelo usuário
+    let ultimoFoco = 'litros';
+
+    function converterDeLitros() {
+        ultimoFoco = 'litros';
+        const densidade = parseFloat(document.getElementById('semente').value);
+        const litros = document.getElementById('litros').value;
+        const pesoField = document.getElementById('peso');
+        
+        if (litros && litros > 0) {
+            const resultadoPeso = (litros * densidade).toFixed(2);
+            pesoField.value = resultadoPeso;
+            atualizarDisplay(litros, resultadoPeso);
+        } else {
+            limpar();
+        }
+    }
+
+    function converterDePeso() {
+        ultimoFoco = 'peso';
+        const densidade = parseFloat(document.getElementById('semente').value);
+        const peso = document.getElementById('peso').value;
+        const litrosField = document.getElementById('litros');
+        
+        if (peso && peso > 0) {
+            const resultadoLitros = (peso / densidade).toFixed(2);
+            litrosField.value = resultadoLitros;
+            atualizarDisplay(resultadoLitros, peso);
+        } else {
+            limpar();
+        }
+    }
+
+    // Nova função para quando o usuário mudar o tipo de semente no select
+    function recalcular() {
+        if (ultimoFoco === 'litros') {
+            converterDeLitros();
+        } else {
+            converterDePeso();
+        }
+    }
+
+    function atualizarDisplay(l, kg) {
+        document.getElementById('res-litros').innerText = `Volume: ${l} L`;
+        document.getElementById('res-peso').innerText = `Peso: ${kg} kg`;
+    }
+
+    function limpar() {
+        document.getElementById('litros').value = '';
+        document.getElementById('peso').value = '';
+        document.getElementById('res-litros').innerText = `Volume: 0 L`;
+        document.getElementById('res-peso').innerText = `Peso: 0 kg`;
+    }
+</script>
+
+</body>
+</html>
